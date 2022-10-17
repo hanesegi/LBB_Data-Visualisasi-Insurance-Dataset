@@ -1,0 +1,7 @@
+"0","##check duplikat data
+sum(duplicated(df))
+"
+"1","[1]"
+"1"," 1"
+"1","
+"

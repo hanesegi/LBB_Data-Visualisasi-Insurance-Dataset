@@ -1,0 +1,104 @@
+---
+title: "LBB_Data Visualization_Insurance Dataset"
+author: "yohanesegipratama"
+date: "`r Sys.Date()`"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+# Deskripsi Variabel
+
+age: age of primary beneficiary
+
+sex: insurance contractor gender, female, male
+
+bmi: Body mass index, providing an understanding of body, weights that are relatively high or low         relative to height, objective index of body weight (kg / m ^ 2) using the ratio of height to         weight, ideally 18.5 to 24.9
+
+children  : Number of children covered by health insurance / Number of dependents
+
+smoker    : Smoking
+
+region    : the beneficiary's residential area in the US, northeast, southeast, southwest, northwest.
+
+charges   : Individual medical costs billed by health insurance
+
+#import library
+
+library(tidyverse)
+library(ggplot2)
+
+#load data
+```{r}
+df = read.csv('data_input/insurance.csv', header = TRUE)
+```
+
+
+```{r}
+head(df)
+```
+
+```{r}
+summary(df)
+```
+#Data Preprocessing
+
+```{r}
+str(df)
+```
+
+##check missing vallue
+```{r}
+colSums(is.na(df))
+```
+
+##check duplikat data
+```{r}
+##check duplikat data
+sum(duplicated(df))
+```
+```{r}
+cat("\ndata duplikat")
+df[duplicated(df),]
+```
+```{r}
+df <- df %>% distinct()
+```
+
+#exploratory data analysis
+
+```{r}
+
+ggplot(df,aes(x = charges, color = smoker))+
+  geom_histogram(fill = "white", position = "dodge")+
+  theme(legend.position = "top")
+```
+
+* insight
+berdasarkan visualisasi diatas dapat diketahui, ternyata banyak tidak perokok (perokok pasif)
+
+```{r}
+options(repr.plot.width=7, repr.plot.height=5)
+ggplot(df, aes(x=log(charges))) +
+    geom_histogram(aes(y=..density..),color="black", fill="pink", bins=40) +
+    geom_density(color="blue") +
+    geom_vline(aes(xintercept= mean(log(charges))), color="blue", linetype="dashed", size=1) +
+    geom_vline(aes(xintercept= median(log(charges))), color="red", linetype="dashed", size=1)
+```
+* insight
+berdasarkan grafik histogram diatas data cenderung kekanan (skew-to-right-distribution)
+
+
+
+```{r}
+ggplot(df)+
+  geom_violin(mapping = aes(x = smoker, y = charges, fill = sex), draw_quantiles = (c(0.25,0.5,0.75)))
+```
+* insight
+violin plot diatas dapat disimpulkan bahwa distribusi jenis kelamin lebih banyak perokok
